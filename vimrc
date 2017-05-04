@@ -26,6 +26,7 @@ Plugin 'tpope/vim-fugitive'
 
 Plugin 'vim-scripts/FuzzyFinder'
 
+Plugin 'jistr/vim-nerdtree-tabs'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -130,7 +131,8 @@ let mapleader = "\<Space>"
 "     command vim "$@"
 "     stty "$STTYOPTS"
 " }
-inoremap <S-s> <ESC>:w<CR>
+nmap <C-s> :w<CR>
+imap <C-s> <ESC>:w<CR>
 
 " (Move/Action in Tab/Window)
 " (Split window)
@@ -140,10 +142,10 @@ nmap <C-l> :rightb vnew<CR>
 nmap <C-h> :vnew<CR>
 
 " (New/Move tab)
-nnoremap <S-tab>   :tabnext<CR>
-nnoremap <S-t>     :tabnew<CR>
-inoremap <S-tab>   <Esc>:tabnext<CR>i
-inoremap <S-t>     <Esc>:tabnew<CR>
+nmap <S-tab>   :tabnext<CR>
+nmap <S-t>     :tabnew<CR>
+imap <S-tab>   <Esc>:tabnext<CR>i
+imap <S-t>     <Esc>:tabnew<CR>
 
 nmap <S-q> :q!<CR>
 
