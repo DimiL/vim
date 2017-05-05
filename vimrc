@@ -28,6 +28,8 @@ Plugin 'vim-scripts/FuzzyFinder'
 
 Plugin 'jistr/vim-nerdtree-tabs'
 
+Plugin 'skywind3000/asyncrun.vim'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -97,23 +99,31 @@ endif
 set nu
 set cursorline
 set ai
-""inoremap ( ()<Esc>i
-""inoremap " ""<Esc>i
-""inoremap ' ''<Esc>i
-""inoremap [ []<Esc>i
+set formatoptions+=r
+set expandtab
+set tabstop=2
+set shiftwidth=2
+set hlsearch
+
+inoremap ( ()<Esc>i
+inoremap " ""<Esc>i
+inoremap ' ''<Esc>i
+inoremap [ []<Esc>i
 inoremap {<CR> {<CR>}<Esc>ko
 imap <C-D> <C-O>x
-set hlsearch
-set laststatus=2
-" set statusline=%4*%<\%m%<[%f\%r%h%w]\ [%{&ff},%{&fileencoding},%Y]%=\[Position=%l,%v,%p%%]
-" set ls=2
-set statusline=%<%f\ %m%=\ %h%r\ %-19([%p%%]\ %3l,%02c%03V%)%y
-set clipboard=unnamed
-" highlight StatusLine term=bold,reverse cterm=bold,reverse
 
+set ls=2
+set statusline=%<%f\ %m%=\ %h%r\ %-19([%p%%]\ %3l,%02c%03V%)%y
+highlight StatusLine term=bold,reverse cterm=bold,reverse
+
+" Highlight trailing white space "
 highlight RedundantSpaces ctermbg=red guibg=red
 match RedundantSpaces /\s\+$\| \+\ze\t/ "\ze sets end of match so only spaces highlighted
 
+set ignorecase
+set smartcase
+
+set nois
 set pastetoggle=<F3>
 
 " Dimi's hot key
@@ -145,10 +155,10 @@ nmap <C-h> :vnew<CR>
 nmap <S-tab>   :tabnext<CR>
 nmap <S-t>     :tabnew<CR>
 imap <S-tab>   <Esc>:tabnext<CR>i
-imap <S-t>     <Esc>:tabnew<CR>
+" this affect t"
+""inoremap <S-t>     <Esc>:tabnew<CR>
 
-nmap <S-q> :q!<CR>
-
+nmap <S-c> :q!<CR>
 nmap <S-j> <C-w>j
 nmap <S-k> <C-w>k
 nmap <S-l> <C-w>l
@@ -160,6 +170,9 @@ let g:ycm_confirm_extra_conf = 0
 
 " (Disable syntax check)
 let g:ycm_show_diagnostics_ui = 0
+
+" (Disable preview window)"
+let g:ycm_autoclose_preview_window_after_completion = 1
 
 " [Plugin] easymotion key mapping "
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -195,7 +208,22 @@ map <F2> :NERDTreeTabsToggle<CR>
 " Ignore files
 let NERDTreeIgnore=['\.pyc','\~$','\.swp']
 
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
 "[Plugin] FuzzyFinder key mapping "
-map ff <esc>:FufFile<cr>
+map ff <ESC>:FufFile<CR>
+
+"Map function key
+map <F3> :tabdo e<CR>
+map <F4> :tabdo w<CR>
+
+"[Firefox]This is for firefox only
+"Create only 1 quickfix window in the end of tab
+map <F5> :tabdo ccl<CR>:$tabnew<CR>:AsyncRun make<CR>:q<CR>
+
+augroup vimrc
+  autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+augroup END
+
+augroup QuickfixStatus
+	au! BufWinEnter quickfix setlocal
+		\ statusline=%t\ [%{g:asyncrun_status}]\ %{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ %P
+augroup END
