@@ -20,19 +20,27 @@ Plugin 'easymotion/vim-easymotion'
 
 Plugin 'scrooloose/nerdtree'
 
+Plugin 'scrooloose/nerdcommenter'
+
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 Plugin 'tpope/vim-fugitive'
-
-Plugin 'vim-scripts/FuzzyFinder'
 
 Plugin 'jistr/vim-nerdtree-tabs'
 
 Plugin 'skywind3000/asyncrun.vim'
 
+Plugin 'junegunn/fzf.vim'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+" Install
+" git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+" ~/.fzf/install
+set rtp+=~/.fzf
+
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
@@ -117,8 +125,13 @@ set statusline=%<%f\ %m%=\ %h%r\ %-19([%p%%]\ %3l,%02c%03V%)%y
 highlight StatusLine term=bold,reverse cterm=bold,reverse
 
 " Highlight trailing white space "
-highlight RedundantSpaces ctermbg=red guibg=red
-match RedundantSpaces /\s\+$\| \+\ze\t/ "\ze sets end of match so only spaces highlighted
+highlight ExtraWhitespace ctermbg=red guibg=red
+""match ExtraWhitespace /\s\+$\| \+\ze\t/
+" in office pc BufWinEnter not working"
+augroup RedudantWhiteSpace
+  autocmd BufWinEnter * match ExtraWhitespace /\s\+$\| \+\ze\t/
+  autocmd BufWinLeave * call clearmatches()
+augroup END
 
 set ignorecase
 set smartcase
@@ -209,15 +222,17 @@ map <F2> :NERDTreeTabsToggle<CR>
 let NERDTreeIgnore=['\.pyc','\~$','\.swp']
 
 "[Plugin] FuzzyFinder key mapping "
-map ff <ESC>:FufFile<CR>
+map ff <ESC>:FZF --reverse<CR>
+map gff <ESC>:GFiles?<CR>
+map cff <ESC>:Commits<CR>
+let g:fzf_layout = { 'down': '30%' }
 
 "Map function key
 map <F3> :tabdo e<CR>
 map <F4> :tabdo w<CR>
 
-"[Firefox]This is for firefox only
-"Create only 1 quickfix window in the end of tab
-map <F5> :tabdo ccl<CR>:$tabnew<CR>:AsyncRun make<CR>:q<CR>
+"[Firefox]This is for firefox only >>>
+let g:EnableFirefoxBuildMapping = 1
 
 augroup vimrc
   autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
