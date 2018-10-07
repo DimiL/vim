@@ -16,3 +16,6 @@
 [submodule "bundle/fzf"]
 	path = bundle/fzf
 	url = https://github.com/junegunn/fzf
+[submodule "plugin/idevim"]
+	path = plugin/idevim
+	url = https://github.com/DimiL/idevim
